@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1117">
+<title>ToetsweekDrill</title>
+<meta name="description" content="Oefen voor de toetsweek met flashcards, meerkeuzevragen en open vragen.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="app-kop">
+  <span class="app-logo">📚</span>
+  <span class="app-naam">ToetsweekDrill</span>
+</header>
+<main id="app"></main>
+<nav class="tabbar">
+  <a href="#/home" data-tab="home"><span class="tab-icoon">🏠</span><span>Home</span></a>
+  <a href="#/beheer" data-tab="beheer"><span class="tab-icoon">⚙️</span><span>Beheer</span></a>
+</nav>
+<script type="module" src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+  }
+</script>
+</body>
+</html>

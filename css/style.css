@@ -1,0 +1,434 @@
+/* ToetsweekDrill — mobile-first, donker thema */
+
+:root {
+  --achtergrond: #0f1117;
+  --kaart: #1a1e29;
+  --kaart-hoog: #232838;
+  --tekst: #e8eaf2;
+  --tekst-stil: #8a91a5;
+  --accent: #6c7bff;
+  --rand: #2a3042;
+  --groen: #4caf7d;
+  --rood: #e05656;
+  --geel: #e8b84b;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--achtergrond);
+  color: var(--tekst);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== app-kop & tabbar ===== */
+
+.app-kop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 16px calc(84px + env(safe-area-inset-bottom));
+}
+
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  display: flex;
+  justify-content: space-around;
+  background: var(--kaart);
+  border-top: 1px solid var(--rand);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 10;
+}
+
+.tabbar a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0 8px;
+  font-size: 0.75rem;
+  color: var(--tekst-stil);
+  text-decoration: none;
+}
+
+.tabbar a.actief { color: var(--accent); }
+
+.tab-icoon { font-size: 1.3rem; line-height: 1; }
+
+/* ===== algemene elementen ===== */
+
+h2, h3 { margin: 0; }
+
+.schermtitel { font-size: 1.35rem; margin: 8px 0 14px; }
+
+.sectiekop {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tekst-stil);
+  margin: 24px 0 10px;
+}
+
+.stil { color: var(--tekst-stil); font-size: 0.85rem; margin: 4px 0; }
+
+.kaart {
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.vak-kaart { border-left: 4px solid var(--vakkleur, var(--accent)); }
+
+.vak-kop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.vak-kop h3 { font-size: 1rem; }
+
+.vak-emoji { font-size: 1.35rem; line-height: 1; }
+
+/* ===== knoppen ===== */
+
+.knop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 10px 18px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--kaart-hoog);
+  color: var(--tekst);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.knop.primair {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.knop:disabled { opacity: 0.4; cursor: default; }
+
+.knop:not(:disabled):active { transform: scale(0.97); }
+
+.knoppenrij {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.knoppenrij .knop { flex: 1; }
+
+.icoonknop {
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  background: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.icoonknop:active { background: var(--kaart-hoog); }
+
+.terug {
+  display: inline-block;
+  color: var(--tekst-stil);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 0;
+  margin-bottom: 4px;
+}
+
+/* ===== badges ===== */
+
+.badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-urgent { background: rgba(224, 86, 86, 0.18); color: var(--rood); }
+.badge-snel { background: rgba(232, 184, 75, 0.15); color: var(--geel); }
+.badge-later { background: rgba(108, 123, 255, 0.15); color: var(--accent); }
+.badge-geweest { background: var(--kaart-hoog); color: var(--tekst-stil); }
+
+/* ===== toets-lijsten (home) ===== */
+
+.toets-lijst, .vraag-lijst, .beheer-lijst {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toets-rij {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 52px;
+  padding: 8px 4px;
+  color: var(--tekst);
+  text-decoration: none;
+  border-top: 1px solid var(--rand);
+}
+
+.toets-info { display: flex; flex-direction: column; }
+
+.toets-datum { color: var(--tekst-stil); font-size: 0.82rem; }
+
+.toets-onderwerp { font-size: 1.25rem; margin: 6px 0 2px; }
+
+.notities {
+  color: var(--tekst-stil);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+}
+
+/* ===== beheersing ===== */
+
+.beheersing { margin-top: 12px; }
+
+.beheersing-balk {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--kaart-hoog);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.beheersing-vulling {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--groen);
+  transition: width 0.3s;
+}
+
+/* ===== vraaglijst ===== */
+
+.vraag-rij {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vraag-info { min-width: 0; }
+
+.vraag-tekst {
+  margin: 6px 0 4px;
+  overflow-wrap: break-word;
+}
+
+.vraag-acties { display: flex; flex-shrink: 0; }
+
+.type-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.type-flashcard { background: rgba(108, 123, 255, 0.15); color: var(--accent); }
+.type-mc { background: rgba(76, 175, 125, 0.15); color: var(--groen); }
+.type-open { background: rgba(232, 184, 75, 0.15); color: var(--geel); }
+
+.box-dots {
+  color: var(--groen);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+}
+
+/* ===== beheer ===== */
+
+.beheer-rij {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-left: 4px solid var(--vakkleur, var(--accent));
+  margin-bottom: 8px;
+}
+
+.beheer-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--tekst);
+  text-decoration: none;
+}
+
+/* ===== lege staat ===== */
+
+.leeg {
+  text-align: center;
+  padding: 48px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.leeg-emoji { font-size: 3rem; }
+
+.leeg-klein { padding: 8px 4px 16px; }
+
+/* ===== dialogen (bottom sheets) ===== */
+
+dialog.sheet {
+  width: 100%;
+  max-width: 560px;
+  margin: auto auto 0;
+  border: none;
+  border-radius: 18px 18px 0 0;
+  background: var(--kaart-hoog);
+  color: var(--tekst);
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+dialog.sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
+
+dialog.sheet h3 { margin-bottom: 14px; }
+
+dialog.sheet form { display: flex; flex-direction: column; gap: 12px; }
+
+dialog.sheet label, .veldkop {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tekst-stil);
+}
+
+dialog.sheet input[type="text"],
+dialog.sheet input[type="date"],
+dialog.sheet input:not([type]),
+dialog.sheet select,
+dialog.sheet textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  background: var(--kaart);
+  color: var(--tekst);
+  font: inherit;
+}
+
+dialog.sheet textarea { resize: vertical; }
+
+dialog.sheet input:focus,
+dialog.sheet select:focus,
+dialog.sheet textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* emoji- en kleurkiezers */
+
+.emoji-rij, .kleur-rij {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.emoji-keuze {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.25rem;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  background: var(--kaart);
+  cursor: pointer;
+}
+
+.kleur-keuze {
+  width: 38px;
+  height: 38px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.kleur-keuze.actief { border-color: var(--tekst); }
+
+/* segmentknoppen (vraagtype) */
+
+.segmenten {
+  display: flex;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.segmenten button {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  background: var(--kaart);
+  color: var(--tekst-stil);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segmenten button.actief {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* mc-optierijen */
+
+.optie-rij {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.optie-rij input[type="radio"] {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  accent-color: var(--groen);
+}
