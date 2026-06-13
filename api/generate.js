@@ -36,17 +36,24 @@ function systemPrompt() {
     '  - "vraag": de vraagtekst (bij flashcard: de voorkant)',
     '  - "antwoord": het juiste/model-antwoord (bij flashcard: de achterkant)',
     '  - "opties": ALLEEN bij type "mc" — precies 4 korte antwoordopties; "antwoord" moet exact gelijk zijn aan één van de opties',
-    'Maak de vragen feitelijk correct, gevarieerd en duidelijk. Geen dubbele vragen.',
+    '',
+    'Stem de vraagstijl af op het vak en hoe daarop in de praktijk wordt getoetst:',
+    '- Reken- en exacte vakken (wiskunde, natuurkunde, scheikunde, economie): geef vooral sommen, berekeningen en toepassingsopgaven met concrete getallen, waarbij de leerling echt iets moet uitrekenen of oplossen — niet alleen kennis- of definitievragen. Geef bij het antwoord de uitkomst én kort de uitwerking/tussenstappen.',
+    '- Talen: woordenschat, grammatica, zinsbouw en vertalingen.',
+    '- Zaakvakken (geschiedenis, aardrijkskunde, biologie, maatschappijleer): begrippen, verbanden, oorzaken/gevolgen en uitleg.',
+    'Een rekenopgave kan als flashcard (voorkant = de opgave, achterkant = uitwerking + antwoord), als open vraag, of als meerkeuze met 4 mogelijke uitkomsten.',
+    'Maak realistische toetsvragen zoals een docent ze echt zou stellen, feitelijk correct, gevarieerd en duidelijk. Geen dubbele vragen.',
   ].join('\n');
 }
 
-function gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, heeftTekst, heeftAfbeelding }) {
+function gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, wensen, heeftTekst, heeftAfbeelding }) {
   const r = [];
   r.push(`Vak: ${vak || 'onbekend'}.`);
   r.push(`Onderwerp: ${onderwerp || 'onbekend'}.`);
   if (niveau) r.push(`Niveau van de leerling: ${niveau}.`);
   r.push(TAAL_INSTRUCTIE[taal] || TAAL_INSTRUCTIE.auto);
   r.push(`Maak ${aantal} vragen: ${TYPE_OMSCHRIJVING[type] || TYPE_OMSCHRIJVING.gemengd}.`);
+  if (wensen) r.push(`Extra aanwijzingen van de leerling (volg deze waar mogelijk): ${wensen}`);
   if (heeftAfbeelding) r.push('De stof staat op de bijgevoegde afbeelding (aantekeningen, boekpagina of samenvatting).');
   if (heeftTekst) r.push('De stof staat in de onderstaande tekst.');
   if (!heeftAfbeelding && !heeftTekst) {
@@ -104,6 +111,7 @@ export default async function handler(req, res) {
     const { vak, onderwerp, niveau, tekst, afbeelding } = body;
     const type = ['flashcard', 'mc', 'open', 'gemengd'].includes(body.type) ? body.type : 'gemengd';
     const taal = ['auto', 'nl', 'en'].includes(body.taal) ? body.taal : 'auto';
+    const wensen = typeof body.wensen === 'string' ? body.wensen.trim().slice(0, 500) : '';
     const aantal = Math.min(Math.max(parseInt(body.aantal, 10) || 10, 1), 30);
 
     const heeftTekst = typeof tekst === 'string' && tekst.trim().length > 0;
@@ -119,7 +127,7 @@ export default async function handler(req, res) {
         source: { type: 'base64', media_type: afbeelding.mediaType, data: afbeelding.data },
       });
     }
-    let instructie = gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, heeftTekst, heeftAfbeelding });
+    let instructie = gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, wensen, heeftTekst, heeftAfbeelding });
     if (heeftTekst) instructie += '\n\nStof:\n' + tekst.trim();
     content.push({ type: 'text', text: instructie });
 

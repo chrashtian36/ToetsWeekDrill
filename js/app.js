@@ -609,6 +609,9 @@ function aiForm(toets, vak) {
       <label>Niveau (optioneel)
         <input type="text" name="niveau" autocomplete="off" placeholder="bv. havo 3">
       </label>
+      <label>Extra wensen (optioneel)
+        <input type="text" name="wensen" autocomplete="off" placeholder="bv. vooral sommen, focus op hoofdstuk 3">
+      </label>
       <div class="knoppenrij">
         <button type="button" class="knop" data-annuleer>Annuleren</button>
         <button type="submit" class="knop primair">Genereren</button>
@@ -633,6 +636,7 @@ function aiForm(toets, vak) {
       niveau: form.elements.niveau.value.trim(),
       type: form.elements.type.value,
       taal: form.elements.taal.value,
+      wensen: form.elements.wensen.value.trim(),
       aantal: Number(form.elements.aantal.value) || 10,
     };
 
