@@ -668,10 +668,14 @@ function aiForm(toets, vak) {
       if (!data.vragen?.length) throw new Error('Geen vragen ontvangen.');
       aiReview(dlg, toets.id, data.vragen);
     } catch (err) {
+      // Netwerk-/verbindingsfout (bv. koude start van de function die te lang duurt)
+      const melding = err.name === 'TypeError'
+        ? 'Kon de AI niet bereiken — waarschijnlijk een time-out terwijl de functie opstartte. Tik op Opnieuw; de tweede keer gaat het meestal wel.'
+        : err.message;
       dlg.innerHTML = `
         <div class="ai-fout">
           <h3>Genereren mislukt</h3>
-          <p>${esc(err.message)}</p>
+          <p>${esc(melding)}</p>
           <div class="knoppenrij">
             <button type="button" class="knop" data-sluit>Sluiten</button>
             <button type="button" class="knop primair" data-opnieuw>Opnieuw</button>
