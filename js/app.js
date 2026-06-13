@@ -210,6 +210,13 @@ async function renderBeheer() {
   toetsen.sort((a, b) => a.datum.localeCompare(b.datum));
   const vakVan = id => vakken.find(v => v.id === id);
 
+  const persistent = navigator.storage?.persisted ? await navigator.storage.persisted().catch(() => null) : null;
+  const opslagStatus = persistent === true
+    ? '🔒 Je gegevens staan veilig en permanent op dit apparaat.'
+    : persistent === false
+      ? '⚠️ De browser markeert je gegevens nog niet als permanent. Maak regelmatig een export als back-up.'
+      : 'Je gegevens staan lokaal op dit apparaat.';
+
   appEl.innerHTML = `
     <h2 class="schermtitel">Beheer</h2>
 
@@ -255,6 +262,7 @@ async function renderBeheer() {
       <input type="file" id="importBestand" accept="application/json,.json" hidden>
     </div>
     <p class="stil">Export bevat alle vakken, toetsen, vragen en voortgang als JSON-bestand. Import vervangt alle huidige data.</p>
+    <p class="stil">${opslagStatus}</p>
   `;
 
   document.getElementById('nieuwVak').addEventListener('click', () => vakForm());
@@ -766,5 +774,16 @@ function aiReview(dlg, toetsId, vragen) {
 
 /* ===== start ===== */
 
+// Vraag de browser om de lokale data als permanent te markeren, zodat hij
+// niet wordt opgeruimd bij weinig opslagruimte. Faalt stilletjes als het niet kan.
+async function vraagPersistenteOpslag() {
+  try {
+    if (navigator.storage?.persist && !(await navigator.storage.persisted())) {
+      await navigator.storage.persist();
+    }
+  } catch { /* niet kritisch */ }
+}
+
+vraagPersistenteOpslag();
 window.addEventListener('hashchange', render);
 render();
