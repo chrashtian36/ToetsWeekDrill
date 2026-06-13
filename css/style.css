@@ -491,3 +491,247 @@ dialog.sheet textarea:focus {
   color: var(--tekst-stil);
   margin-top: 6px;
 }
+
+/* ===== Drill-scherm ===== */
+
+body.drill-actief .tabbar { display: none; }
+
+.drill-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--achtergrond);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.drill-kop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px calc(14px + env(safe-area-inset-top));
+  padding-top: max(14px, env(safe-area-inset-top));
+  flex-shrink: 0;
+}
+
+.drill-sluit {
+  border: none;
+  background: none;
+  color: var(--tekst-stil);
+  font-size: 1.3rem;
+  cursor: pointer;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.voortgangsbalk {
+  flex: 1;
+  height: 8px;
+  background: var(--kaart-hoog);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.voortgang-vul {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+
+.drill-teller {
+  font-size: 0.85rem;
+  color: var(--tekst-stil);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.drill-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 16px calc(24px + env(safe-area-inset-bottom));
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.drill-kaartwrap { width: 100%; }
+
+.kaart-tekst {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 8px 0;
+  overflow-wrap: break-word;
+}
+
+/* flip-kaart (flashcard) */
+
+.flip-kaart {
+  perspective: 1200px;
+  width: 100%;
+  min-height: 280px;
+  cursor: pointer;
+}
+
+.flip-binnen {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  transition: transform 0.45s;
+  transform-style: preserve-3d;
+}
+
+.flip-kaart.omgedraaid .flip-binnen { transform: rotateY(180deg); }
+
+.flip-voor, .flip-achter {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  background: var(--kaart);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  overflow-y: auto;
+}
+
+.flip-achter {
+  transform: rotateY(180deg);
+  background: var(--kaart-hoog);
+}
+
+.kaart-hint {
+  font-size: 0.8rem;
+  color: var(--tekst-stil);
+}
+
+/* open vraag */
+
+.open-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.open-invoer {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--rand);
+  border-radius: 10px;
+  background: var(--kaart);
+  color: var(--tekst);
+  font: inherit;
+  resize: vertical;
+}
+
+.modelantwoord {
+  background: var(--kaart-hoog);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+/* meerkeuze */
+
+.mc-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+.mc-opties { display: flex; flex-direction: column; gap: 10px; }
+
+.mc-optie {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  text-align: left;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--kaart);
+  color: var(--tekst);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.mc-optie:not(:disabled):active { transform: scale(0.99); }
+
+.mc-optie.mc-goed {
+  background: rgba(76, 175, 125, 0.22);
+  border-color: var(--groen);
+  font-weight: 600;
+}
+
+.mc-optie.mc-fout {
+  background: rgba(224, 86, 86, 0.22);
+  border-color: var(--rood);
+}
+
+.mc-optie:disabled { opacity: 1; cursor: default; }
+
+/* zelfbeoordeling */
+
+.beoordeel {
+  display: flex;
+  gap: 8px;
+}
+
+.oordeel-knop {
+  flex: 1;
+  min-height: 52px;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  background: var(--kaart-hoog);
+  color: var(--tekst);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oordeel-knop:active { transform: scale(0.97); }
+
+.oordeel-fout { background: rgba(224, 86, 86, 0.18); border-color: var(--rood); color: var(--rood); }
+.oordeel-bijna { background: rgba(232, 184, 75, 0.15); border-color: var(--geel); color: var(--geel); }
+.oordeel-goed { background: rgba(76, 175, 125, 0.18); border-color: var(--groen); color: var(--groen); }
+
+/* resultaat */
+
+.drill-resultaat {
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 16px calc(32px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.resultaat-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+
+.resultaat-score { font-size: 1.1rem; font-weight: 600; margin: 8px 0; }
+
+.beheersing-balk.groot { height: 12px; max-width: 280px; margin: 12px auto 4px; }
+
+.resultaat-foutlijst {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+  text-align: left;
+}
+
+.resultaat-foutlijst li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+}
+
+.drill-resultaat .sectiekop { text-align: left; }

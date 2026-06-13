@@ -1,4 +1,5 @@
 import * as db from './db.js';
+import { startDrill } from './drill.js';
 
 const PALET = ['#ef5350', '#ff7043', '#ffca28', '#66bb6a', '#26a69a', '#42a5f5', '#5c6bc0', '#ab47bc', '#ec407a', '#8d6e63'];
 const EMOJI_SUGGESTIES = ['📐', '🧮', '🧪', '🔬', '🌍', '📜', '🇳🇱', '🇬🇧', '🇫🇷', '🇩🇪', '💻', '🎨', '🎵', '⚽', '📊', '📖'];
@@ -165,7 +166,7 @@ async function renderToets(id) {
         <span class="stil">${pct}% beheerst · ${vragen.length} ${vragen.length === 1 ? 'vraag' : 'vragen'}</span>
       </div>
       <div class="knoppenrij">
-        <button class="knop primair" disabled title="Komt in fase 2">▶ Drillen</button>
+        <button class="knop primair" id="drillen" ${vragen.length ? '' : 'disabled title="Voeg eerst vragen toe"'}>▶ Drillen</button>
         <button class="knop" id="nieuweVraag">+ Vraag</button>
         <button class="knop" id="aiVraag">✨ AI</button>
       </div>
@@ -191,6 +192,9 @@ async function renderToets(id) {
 
   document.getElementById('nieuweVraag').addEventListener('click', () => vraagForm(toets.id));
   document.getElementById('aiVraag').addEventListener('click', () => aiForm(toets, vak));
+  if (vragen.length) {
+    document.getElementById('drillen').addEventListener('click', () => drillStart(toets, vragen));
+  }
   appEl.querySelectorAll('[data-bewerk]').forEach(b => b.addEventListener('click', () => {
     vraagForm(toets.id, vragen.find(v => v.id === b.dataset.bewerk));
   }));
@@ -538,6 +542,43 @@ function vraagForm(toetsId, vraag = null) {
     await db.put('vragen', nieuw);
     dlg.close();
     render();
+  });
+}
+
+/* ----- Drillen ----- */
+
+function drillStart(toets, vragen) {
+  const n = vragen.length;
+  const dlg = openDialog(`
+    <form id="drillStartForm">
+      <h3>Drillen</h3>
+      <p class="stil">${esc(toets.onderwerp)} · ${n} ${n === 1 ? 'vraag' : 'vragen'}</p>
+      <span class="veldkop">Hoeveel vragen deze sessie?</span>
+      <div class="segmenten" id="lengteKeuze">
+        <button type="button" data-lengte="10">10</button>
+        <button type="button" data-lengte="20" class="actief">20</button>
+        <button type="button" data-lengte="alles">Alle (${n})</button>
+      </div>
+      <div class="knoppenrij">
+        <button type="button" class="knop" data-annuleer>Annuleren</button>
+        <button type="submit" class="knop primair">Start</button>
+      </div>
+    </form>
+  `);
+
+  let keuze = '20';
+  dlg.querySelectorAll('#lengteKeuze button').forEach(b => b.addEventListener('click', () => {
+    keuze = b.dataset.lengte;
+    dlg.querySelectorAll('#lengteKeuze button').forEach(x => x.classList.toggle('actief', x === b));
+  }));
+
+  dlg.querySelector('#drillStartForm').addEventListener('submit', e => {
+    e.preventDefault();
+    dlg.close();
+    const opties = keuze === 'alles'
+      ? { vragen, alles: true }
+      : { vragen, lengte: Number(keuze) };
+    startDrill({ ...opties, onKlaar: render });
   });
 }
 
