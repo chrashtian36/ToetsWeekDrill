@@ -2,7 +2,7 @@
 // binnenkomen; offline valt alles terug op de cache.
 // Verhoog CACHE_NAAM bij grote wijzigingen om oude caches op te ruimen.
 
-const CACHE_NAAM = 'toetsweekdrill-v3';
+const CACHE_NAAM = 'toetsweekdrill-v4';
 
 const ASSETS = [
   './',
@@ -10,6 +10,7 @@ const ASSETS = [
   './css/style.css',
   './js/app.js',
   './js/db.js',
+  './js/drill.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
