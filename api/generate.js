@@ -21,9 +21,9 @@ const TYPE_OMSCHRIJVING = {
 };
 
 const TAAL_INSTRUCTIE = {
-  auto: 'Schrijf de vragen en antwoorden in dezelfde taal als de aangeleverde stof.',
+  auto: 'Bepaal eerst in welke taal de aangeleverde stof is geschreven — let daarbij ook op de tekst in een eventuele afbeelding. Schrijf vervolgens ALLE vragen en antwoorden in precies díe taal. Is de stof in het Engels, schrijf de vragen dan ook in het Engels en niet in het Nederlands.',
   nl: 'Schrijf de vragen en antwoorden in het Nederlands.',
-  en: 'Write the questions and answers in English (the source material is for bilingual/TTO education).',
+  en: 'Write ALL questions and answers in English (this is for bilingual/TTO education). Do not write them in Dutch.',
 };
 
 function systemPrompt() {
