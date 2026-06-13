@@ -1,7 +1,8 @@
-// Cache-first service worker voor statische assets.
-// Verhoog CACHE_NAAM bij elke deploy zodat clients de nieuwe versie ophalen.
+// Service worker: netwerk-eerst voor de app-code zodat nieuwe deploys meteen
+// binnenkomen; offline valt alles terug op de cache.
+// Verhoog CACHE_NAAM bij grote wijzigingen om oude caches op te ruimen.
 
-const CACHE_NAAM = 'toetsweekdrill-v2';
+const CACHE_NAAM = 'toetsweekdrill-v3';
 
 const ASSETS = [
   './',
@@ -33,20 +34,18 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
   if (url.pathname.startsWith('/api/')) return; // AI-calls altijd naar het netwerk
 
-  // Navigaties: netwerk eerst zodat updates binnenkomen, offline terugvallen op cache
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match('./index.html')),
-    );
-    return;
-  }
-
-  // Statische assets: cache-first, daarna netwerk (en in cache zetten)
+  // Netwerk-eerst: haal de nieuwste versie op, ververs de cache, en val bij
+  // netwerkproblemen terug op de cache (offline-gedrag blijft behouden).
+  // Navigaties vallen terug op de gecachte index.html.
   e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(antwoord => {
-      const kopie = antwoord.clone();
-      caches.open(CACHE_NAAM).then(cache => cache.put(e.request, kopie));
-      return antwoord;
-    })),
+    fetch(e.request)
+      .then(antwoord => {
+        const kopie = antwoord.clone();
+        caches.open(CACHE_NAAM).then(cache => cache.put(e.request, kopie));
+        return antwoord;
+      })
+      .catch(() => caches.match(e.request).then(hit =>
+        hit || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined),
+      )),
   );
 });
