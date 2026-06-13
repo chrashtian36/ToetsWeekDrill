@@ -1,7 +1,7 @@
 // Cache-first service worker voor statische assets.
 // Verhoog CACHE_NAAM bij elke deploy zodat clients de nieuwe versie ophalen.
 
-const CACHE_NAAM = 'toetsweekdrill-v1';
+const CACHE_NAAM = 'toetsweekdrill-v2';
 
 const ASSETS = [
   './',

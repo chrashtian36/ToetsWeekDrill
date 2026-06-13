@@ -16,6 +16,9 @@
 
 * { box-sizing: border-box; }
 
+/* [hidden] moet winnen van latere display-regels (bv. flex op labels) */
+[hidden] { display: none !important; }
+
 html { height: 100%; }
 
 body {
@@ -431,4 +434,60 @@ dialog.sheet textarea:focus {
   height: 22px;
   flex-shrink: 0;
   accent-color: var(--groen);
+}
+
+/* ===== AI-generatie ===== */
+
+.ai-laden, .ai-fout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px 8px;
+}
+
+.ai-fout { align-items: stretch; text-align: left; }
+.ai-fout .knoppenrij { width: 100%; }
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--rand);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: draai 0.8s linear infinite;
+  margin-bottom: 6px;
+}
+
+@keyframes draai { to { transform: rotate(360deg); } }
+
+.ai-review h3 { margin-bottom: 6px; }
+
+.review-lijst {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-item { margin-bottom: 0; }
+
+.review-kop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.review-item label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tekst-stil);
+  margin-top: 6px;
 }

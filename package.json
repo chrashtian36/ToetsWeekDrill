@@ -1,0 +1,10 @@
+{
+  "name": "toetsweekdrill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PWA om te oefenen voor de toetsweek. Vanilla JS, geen build step.",
+  "engines": {
+    "node": ">=18"
+  }
+}
