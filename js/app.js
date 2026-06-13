@@ -588,6 +588,13 @@ function aiForm(toets, vak) {
           <option value="open">Open vragen</option>
         </select>
       </label>
+      <label>Taal van de vragen
+        <select name="taal">
+          <option value="auto">Zelfde als de stof</option>
+          <option value="nl">Nederlands</option>
+          <option value="en">Engels (TTO)</option>
+        </select>
+      </label>
       <label>Aantal vragen
         <input type="number" name="aantal" value="10" min="1" max="30">
       </label>
@@ -617,6 +624,7 @@ function aiForm(toets, vak) {
       onderwerp: toets.onderwerp,
       niveau: form.elements.niveau.value.trim(),
       type: form.elements.type.value,
+      taal: form.elements.taal.value,
       aantal: Number(form.elements.aantal.value) || 10,
     };
 

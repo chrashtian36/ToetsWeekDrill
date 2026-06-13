@@ -20,10 +20,16 @@ const TYPE_OMSCHRIJVING = {
   gemengd: "een mix van flashcards, meerkeuzevragen (mc) en open vragen",
 };
 
+const TAAL_INSTRUCTIE = {
+  auto: 'Schrijf de vragen en antwoorden in dezelfde taal als de aangeleverde stof.',
+  nl: 'Schrijf de vragen en antwoorden in het Nederlands.',
+  en: 'Write the questions and answers in English (the source material is for bilingual/TTO education).',
+};
+
 function systemPrompt() {
   return [
     'Je bent een ervaren docent die toetsvragen maakt voor een middelbare scholier.',
-    'Genereer vragen op basis van de aangeleverde stof, in het Nederlands, passend bij het niveau.',
+    'Genereer vragen op basis van de aangeleverde stof, passend bij het niveau, in de aangegeven taal.',
     'Antwoord UITSLUITEND met geldige JSON: een array van vraag-objecten, zonder extra tekst of uitleg.',
     'Elk object heeft deze velden:',
     '  - "type": "flashcard" | "mc" | "open"',
@@ -34,11 +40,12 @@ function systemPrompt() {
   ].join('\n');
 }
 
-function gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, heeftTekst, heeftAfbeelding }) {
+function gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, heeftTekst, heeftAfbeelding }) {
   const r = [];
   r.push(`Vak: ${vak || 'onbekend'}.`);
   r.push(`Onderwerp: ${onderwerp || 'onbekend'}.`);
   if (niveau) r.push(`Niveau van de leerling: ${niveau}.`);
+  r.push(TAAL_INSTRUCTIE[taal] || TAAL_INSTRUCTIE.auto);
   r.push(`Maak ${aantal} vragen: ${TYPE_OMSCHRIJVING[type] || TYPE_OMSCHRIJVING.gemengd}.`);
   if (heeftAfbeelding) r.push('De stof staat op de bijgevoegde afbeelding (aantekeningen, boekpagina of samenvatting).');
   if (heeftTekst) r.push('De stof staat in de onderstaande tekst.');
@@ -96,6 +103,7 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const { vak, onderwerp, niveau, tekst, afbeelding } = body;
     const type = ['flashcard', 'mc', 'open', 'gemengd'].includes(body.type) ? body.type : 'gemengd';
+    const taal = ['auto', 'nl', 'en'].includes(body.taal) ? body.taal : 'auto';
     const aantal = Math.min(Math.max(parseInt(body.aantal, 10) || 10, 1), 30);
 
     const heeftTekst = typeof tekst === 'string' && tekst.trim().length > 0;
@@ -111,7 +119,7 @@ export default async function handler(req, res) {
         source: { type: 'base64', media_type: afbeelding.mediaType, data: afbeelding.data },
       });
     }
-    let instructie = gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, heeftTekst, heeftAfbeelding });
+    let instructie = gebruikersInstructie({ vak, onderwerp, niveau, type, aantal, taal, heeftTekst, heeftAfbeelding });
     if (heeftTekst) instructie += '\n\nStof:\n' + tekst.trim();
     content.push({ type: 'text', text: instructie });
 
