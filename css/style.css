@@ -1,22 +1,31 @@
-/* ToetsweekDrill — mobile-first, donker thema */
+/* ToetsweekDrill — "warme schemering": donker, warm, koraal/mint, mobile-first */
 
 :root {
-  --achtergrond: #0f1117;
-  --kaart: #1a1e29;
-  --kaart-hoog: #232838;
-  --tekst: #e8eaf2;
-  --tekst-stil: #8a91a5;
-  --accent: #6c7bff;
-  --rand: #2a3042;
-  --groen: #4caf7d;
-  --rood: #e05656;
-  --geel: #e8b84b;
-  --radius: 14px;
+  --bg: #16131d;
+  --card: #211c2b;
+  --card-2: #2b2438;
+  --tekst: #f4eef8;
+  --tekst-stil: #a89db6;
+  --rand: rgba(255, 255, 255, 0.07);
+  --rand-sterk: rgba(255, 255, 255, 0.14);
+
+  --accent: #ff7d6b;     /* koraal — merk */
+  --accent-2: #ff5d8f;   /* roze — voor gradient */
+  --groen: #3ddc97;      /* mint — goed / beheersing */
+  --geel: #ffc861;       /* amber — bijna / binnenkort */
+  --rood: #ff5d73;       /* framboos — fout / urgent */
+
+  --radius: 18px;
+  --radius-s: 12px;
+  --schaduw: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --schaduw-zacht: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 * { box-sizing: border-box; }
 
-/* [hidden] moet winnen van latere display-regels (bv. flex op labels) */
 [hidden] { display: none !important; }
 
 html { height: 100%; }
@@ -24,12 +33,31 @@ html { height: 100%; }
 body {
   margin: 0;
   min-height: 100%;
-  background: var(--achtergrond);
+  background: var(--bg);
   color: var(--tekst);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.45;
+  line-height: 1.5;
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* warme schemerings-gloed achter alles */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(125% 65% at 50% -15%, rgba(255, 125, 107, 0.20), transparent 60%),
+    radial-gradient(90% 55% at 110% 0%, rgba(61, 220, 151, 0.10), transparent 55%);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
 /* ===== app-kop & tabbar ===== */
@@ -37,17 +65,28 @@ body {
 .app-kop {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 16px 10px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  gap: 9px;
+  padding: 16px 18px 12px;
+  padding-top: max(16px, env(safe-area-inset-top));
+}
+
+.app-logo { font-size: 1.4rem; line-height: 1; }
+
+.app-naam {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 main {
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 0 16px calc(84px + env(safe-area-inset-bottom));
+  padding: 0 18px calc(96px + env(safe-area-inset-bottom));
 }
 
 .tabbar {
@@ -55,10 +94,13 @@ main {
   inset: auto 0 0 0;
   display: flex;
   justify-content: space-around;
-  background: var(--kaart);
+  gap: 4px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(22, 19, 29, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--rand);
-  padding-bottom: env(safe-area-inset-bottom);
-  z-index: 10;
+  z-index: 40;
 }
 
 .tabbar a {
@@ -66,53 +108,97 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 10px 0 8px;
-  font-size: 0.75rem;
+  gap: 3px;
+  max-width: 120px;
+  padding: 8px 0 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
   color: var(--tekst-stil);
   text-decoration: none;
+  border-radius: 14px;
+  transition: color 0.2s, background 0.2s;
 }
 
-.tabbar a.actief { color: var(--accent); }
+.tabbar a.actief {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
 
 .tab-icoon { font-size: 1.3rem; line-height: 1; }
 
 /* ===== algemene elementen ===== */
 
-h2, h3 { margin: 0; }
-
-.schermtitel { font-size: 1.35rem; margin: 8px 0 14px; }
+.schermtitel {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 10px 0 16px;
+}
 
 .sectiekop {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  font-weight: 700;
   color: var(--tekst-stil);
-  margin: 24px 0 10px;
+  margin: 26px 0 12px;
+  font-family: var(--font-body);
 }
 
 .stil { color: var(--tekst-stil); font-size: 0.85rem; margin: 4px 0; }
 
 .kaart {
-  background: var(--kaart);
+  background: var(--card);
   border: 1px solid var(--rand);
   border-radius: var(--radius);
-  padding: 14px;
-  margin-bottom: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--schaduw-zacht);
+  animation: opkomst 0.32s ease both;
 }
 
-.vak-kaart { border-left: 4px solid var(--vakkleur, var(--accent)); }
+@keyframes opkomst {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vak-kaart {
+  position: relative;
+  border-left: 3px solid var(--vakkleur, var(--accent));
+  overflow: hidden;
+}
+
+.vak-kaart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at top right, color-mix(in srgb, var(--vakkleur, var(--accent)) 22%, transparent), transparent 70%);
+  pointer-events: none;
+}
 
 .vak-kop {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 8px;
 }
 
-.vak-kop h3 { font-size: 1rem; }
+.vak-kop h3 { font-size: 1.05rem; font-weight: 700; }
 
-.vak-emoji { font-size: 1.35rem; line-height: 1; }
+.vak-emoji {
+  font-size: 1.25rem;
+  line-height: 1;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--vakkleur, var(--accent)) 22%, var(--card-2));
+  flex-shrink: 0;
+}
 
 /* ===== knoppen ===== */
 
@@ -121,33 +207,36 @@ h2, h3 { margin: 0; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 48px;
-  padding: 10px 18px;
-  border: 1px solid var(--rand);
-  border-radius: var(--radius);
-  background: var(--kaart-hoog);
+  min-height: 50px;
+  padding: 12px 20px;
+  border: 1px solid var(--rand-sterk);
+  border-radius: 14px;
+  background: var(--card-2);
   color: var(--tekst);
+  font-family: var(--font-body);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
+  transition: transform 0.12s, filter 0.2s;
 }
 
 .knop.primair {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  color: #2a0f16;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
-.knop:disabled { opacity: 0.4; cursor: default; }
+.knop:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
 
-.knop:not(:disabled):active { transform: scale(0.97); }
+.knop:not(:disabled):active { transform: scale(0.96); }
 
 .knoppenrij {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .knoppenrij .knop { flex: 1; }
@@ -159,37 +248,40 @@ h2, h3 { margin: 0; }
   background: none;
   font-size: 1.1rem;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 12px;
+  transition: background 0.2s;
 }
 
-.icoonknop:active { background: var(--kaart-hoog); }
+.icoonknop:active { background: var(--card-2); }
 
 .terug {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--tekst-stil);
   text-decoration: none;
   font-weight: 600;
-  padding: 8px 0;
-  margin-bottom: 4px;
+  padding: 10px 0;
+  margin-bottom: 2px;
 }
 
 /* ===== badges ===== */
 
 .badge {
   flex-shrink: 0;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.badge-urgent { background: rgba(224, 86, 86, 0.18); color: var(--rood); }
-.badge-snel { background: rgba(232, 184, 75, 0.15); color: var(--geel); }
-.badge-later { background: rgba(108, 123, 255, 0.15); color: var(--accent); }
-.badge-geweest { background: var(--kaart-hoog); color: var(--tekst-stil); }
+.badge-urgent { background: color-mix(in srgb, var(--rood) 20%, transparent); color: var(--rood); }
+.badge-snel { background: color-mix(in srgb, var(--geel) 18%, transparent); color: var(--geel); }
+.badge-later { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.badge-geweest { background: var(--card-2); color: var(--tekst-stil); }
 
-/* ===== toets-lijsten (home) ===== */
+/* ===== lijsten ===== */
 
 .toets-lijst, .vraag-lijst, .beheer-lijst {
   list-style: none;
@@ -202,43 +294,47 @@ h2, h3 { margin: 0; }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  min-height: 52px;
-  padding: 8px 4px;
+  min-height: 56px;
+  padding: 12px 4px;
   color: var(--tekst);
   text-decoration: none;
   border-top: 1px solid var(--rand);
+  transition: padding-left 0.18s;
 }
 
-.toets-info { display: flex; flex-direction: column; }
+.toets-rij:active { padding-left: 8px; }
+
+.toets-info { display: flex; flex-direction: column; gap: 2px; }
+.toets-info strong { font-weight: 600; }
 
 .toets-datum { color: var(--tekst-stil); font-size: 0.82rem; }
 
-.toets-onderwerp { font-size: 1.25rem; margin: 6px 0 2px; }
+.toets-onderwerp { font-size: 1.5rem; font-weight: 800; margin: 8px 0 4px; line-height: 1.15; }
 
 .notities {
   color: var(--tekst-stil);
   font-size: 0.9rem;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   white-space: pre-wrap;
 }
 
 /* ===== beheersing ===== */
 
-.beheersing { margin-top: 12px; }
+.beheersing { margin-top: 14px; }
 
 .beheersing-balk {
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
-  background: var(--kaart-hoog);
+  background: var(--card-2);
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .beheersing-vulling {
   height: 100%;
   border-radius: 999px;
-  background: var(--groen);
-  transition: width 0.3s;
+  background: linear-gradient(90deg, var(--groen), #5be0c0);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ===== vraaglijst ===== */
@@ -252,42 +348,35 @@ h2, h3 { margin: 0; }
 
 .vraag-info { min-width: 0; }
 
-.vraag-tekst {
-  margin: 6px 0 4px;
-  overflow-wrap: break-word;
-}
+.vraag-tekst { margin: 8px 0 6px; overflow-wrap: break-word; }
 
 .vraag-acties { display: flex; flex-shrink: 0; }
 
 .type-chip {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
-.type-flashcard { background: rgba(108, 123, 255, 0.15); color: var(--accent); }
-.type-mc { background: rgba(76, 175, 125, 0.15); color: var(--groen); }
-.type-open { background: rgba(232, 184, 75, 0.15); color: var(--geel); }
+.type-flashcard { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.type-mc { background: color-mix(in srgb, var(--groen) 18%, transparent); color: var(--groen); }
+.type-open { background: color-mix(in srgb, var(--geel) 18%, transparent); color: var(--geel); }
 
-.box-dots {
-  color: var(--groen);
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-}
+.box-dots { color: var(--groen); font-size: 0.7rem; letter-spacing: 3px; }
 
 /* ===== beheer ===== */
 
 .beheer-rij {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-left: 4px solid var(--vakkleur, var(--accent));
-  margin-bottom: 8px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--vakkleur, var(--accent));
+  margin-bottom: 10px;
 }
 
 .beheer-info {
@@ -295,6 +384,7 @@ h2, h3 { margin: 0; }
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 1px;
   color: var(--tekst);
   text-decoration: none;
 }
@@ -303,56 +393,69 @@ h2, h3 { margin: 0; }
 
 .leeg {
   text-align: center;
-  padding: 48px 16px;
+  padding: 56px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.leeg-emoji { font-size: 3rem; }
+.leeg-emoji {
+  font-size: 3.4rem;
+  filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--accent) 40%, transparent));
+}
 
-.leeg-klein { padding: 8px 4px 16px; }
+.leeg h2 { font-size: 1.5rem; font-weight: 800; }
+
+.leeg-klein { padding: 10px 4px 18px; }
 
 /* ===== dialogen (bottom sheets) ===== */
 
 dialog.sheet {
   width: 100%;
-  max-width: 560px;
+  max-width: 600px;
   margin: auto auto 0;
   border: none;
-  border-radius: 18px 18px 0 0;
-  background: var(--kaart-hoog);
+  border-radius: 24px 24px 0 0;
+  background: var(--card);
   color: var(--tekst);
-  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  padding: 22px 20px calc(22px + env(safe-area-inset-bottom));
+  box-shadow: var(--schaduw);
+  animation: sheetop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-dialog.sheet::backdrop { background: rgba(0, 0, 0, 0.6); }
+@keyframes sheetop {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
-dialog.sheet h3 { margin-bottom: 14px; }
+dialog.sheet::backdrop { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px); }
 
-dialog.sheet form { display: flex; flex-direction: column; gap: 12px; }
+dialog.sheet h3 { margin-bottom: 16px; font-size: 1.3rem; font-weight: 800; }
+
+dialog.sheet form { display: flex; flex-direction: column; gap: 14px; }
 
 dialog.sheet label, .veldkop {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--tekst-stil);
 }
 
 dialog.sheet input[type="text"],
 dialog.sheet input[type="date"],
+dialog.sheet input[type="number"],
 dialog.sheet input:not([type]),
 dialog.sheet select,
 dialog.sheet textarea {
   width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  border: 1px solid var(--rand);
-  border-radius: 10px;
-  background: var(--kaart);
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--rand-sterk);
+  border-radius: var(--radius-s);
+  background: var(--bg);
   color: var(--tekst);
   font: inherit;
 }
@@ -368,66 +471,66 @@ dialog.sheet textarea:focus {
 
 /* emoji- en kleurkiezers */
 
-.emoji-rij, .kleur-rij {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
+.emoji-rij, .kleur-rij { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .emoji-keuze {
-  min-width: 44px;
-  min-height: 44px;
-  font-size: 1.25rem;
-  border: 1px solid var(--rand);
-  border-radius: 10px;
-  background: var(--kaart);
+  min-width: 46px;
+  min-height: 46px;
+  font-size: 1.3rem;
+  border: 1px solid var(--rand-sterk);
+  border-radius: 13px;
+  background: var(--bg);
   cursor: pointer;
+  transition: transform 0.12s;
 }
 
+.emoji-keuze:active { transform: scale(0.9); }
+
 .kleur-keuze {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: 3px solid transparent;
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.12s;
 }
 
-.kleur-keuze.actief { border-color: var(--tekst); }
+.kleur-keuze.actief { border-color: var(--tekst); transform: scale(1.12); }
 
-/* segmentknoppen (vraagtype) */
+/* segmentknoppen */
 
 .segmenten {
   display: flex;
-  border: 1px solid var(--rand);
-  border-radius: 10px;
+  border: 1px solid var(--rand-sterk);
+  border-radius: 13px;
   overflow: hidden;
+  padding: 3px;
+  gap: 3px;
+  background: var(--bg);
 }
 
 .segmenten button {
   flex: 1;
-  min-height: 44px;
+  min-height: 42px;
   border: none;
-  background: var(--kaart);
+  border-radius: 10px;
+  background: transparent;
   color: var(--tekst-stil);
   font: inherit;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .segmenten button.actief {
-  background: var(--accent);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #2a0f16;
 }
 
-/* mc-optierijen */
+/* mc-optierijen (formulier) */
 
-.optie-rij {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
+.optie-rij { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 
 .optie-rij input[type="radio"] {
   width: 22px;
@@ -443,17 +546,17 @@ dialog.sheet textarea:focus {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
-  padding: 24px 8px;
+  gap: 10px;
+  padding: 28px 8px;
 }
 
 .ai-fout { align-items: stretch; text-align: left; }
 .ai-fout .knoppenrij { width: 100%; }
 
 .spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid var(--rand);
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--rand-sterk);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: draai 0.8s linear infinite;
@@ -467,13 +570,13 @@ dialog.sheet textarea:focus {
 .review-lijst {
   max-height: 55vh;
   overflow-y: auto;
-  margin: 12px 0;
+  margin: 14px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.review-item { margin-bottom: 0; }
+.review-item { margin-bottom: 0; animation: none; }
 
 .review-kop {
   display: flex;
@@ -487,9 +590,9 @@ dialog.sheet textarea:focus {
   flex-direction: column;
   gap: 4px;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--tekst-stil);
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 /* ===== Drill-scherm ===== */
@@ -500,50 +603,65 @@ body.drill-actief .tabbar { display: none; }
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: var(--achtergrond);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
+.drill-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(125% 60% at 50% -10%, rgba(255, 125, 107, 0.16), transparent 60%);
+}
+
+.drill-overlay > * { position: relative; z-index: 1; }
+
 .drill-kop {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px calc(14px + env(safe-area-inset-top));
-  padding-top: max(14px, env(safe-area-inset-top));
+  gap: 14px;
+  padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
   flex-shrink: 0;
 }
 
 .drill-sluit {
   border: none;
-  background: none;
+  background: var(--card);
   color: var(--tekst-stil);
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  min-width: 40px;
-  min-height: 40px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .voortgangsbalk {
   flex: 1;
-  height: 8px;
-  background: var(--kaart-hoog);
+  height: 10px;
+  background: var(--card-2);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .voortgang-vul {
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
   border-radius: 999px;
-  transition: width 0.3s;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .drill-teller {
   font-size: 0.85rem;
+  font-weight: 700;
   color: var(--tekst-stil);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
@@ -554,9 +672,9 @@ body.drill-actief .tabbar { display: none; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
-  padding: 8px 16px calc(24px + env(safe-area-inset-bottom));
-  max-width: 560px;
+  gap: 18px;
+  padding: 8px 18px calc(28px + env(safe-area-inset-bottom));
+  max-width: 600px;
   width: 100%;
   margin: 0 auto;
 }
@@ -564,26 +682,29 @@ body.drill-actief .tabbar { display: none; }
 .drill-kaartwrap { width: 100%; }
 
 .kaart-tekst {
-  font-size: 1.25rem;
-  line-height: 1.4;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   margin: 8px 0;
   overflow-wrap: break-word;
 }
 
-/* flip-kaart (flashcard) */
+/* flip-kaart */
 
 .flip-kaart {
-  perspective: 1200px;
+  perspective: 1400px;
   width: 100%;
-  min-height: 280px;
+  min-height: 300px;
   cursor: pointer;
 }
 
 .flip-binnen {
   position: relative;
   width: 100%;
-  min-height: 280px;
-  transition: transform 0.45s;
+  min-height: 300px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   transform-style: preserve-3d;
 }
 
@@ -598,81 +719,80 @@ body.drill-actief .tabbar { display: none; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 24px;
+  gap: 14px;
+  padding: 28px;
   text-align: center;
-  background: var(--kaart);
+  border-radius: 22px;
   border: 1px solid var(--rand);
-  border-radius: var(--radius);
   overflow-y: auto;
+  box-shadow: var(--schaduw);
 }
+
+.flip-voor { background: linear-gradient(160deg, var(--card-2), var(--card)); }
 
 .flip-achter {
   transform: rotateY(180deg);
-  background: var(--kaart-hoog);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--card-2)), var(--card));
 }
 
-.kaart-hint {
-  font-size: 0.8rem;
-  color: var(--tekst-stil);
-}
+.kaart-hint { font-size: 0.8rem; color: var(--tekst-stil); font-family: var(--font-body); font-weight: 600; }
 
 /* open vraag */
 
-.open-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.open-wrap { display: flex; flex-direction: column; gap: 14px; }
 
 .open-invoer {
   width: 100%;
-  padding: 12px;
-  border: 1px solid var(--rand);
-  border-radius: 10px;
-  background: var(--kaart);
+  padding: 14px;
+  border: 1px solid var(--rand-sterk);
+  border-radius: var(--radius-s);
+  background: var(--card);
   color: var(--tekst);
   font: inherit;
   resize: vertical;
 }
 
+.open-invoer:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
 .modelantwoord {
-  background: var(--kaart-hoog);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 14%, var(--card)), var(--card));
   border: 1px solid var(--rand);
   border-radius: var(--radius);
-  padding: 14px;
+  padding: 16px;
 }
 
 /* meerkeuze */
 
-.mc-wrap { display: flex; flex-direction: column; gap: 12px; }
+.mc-wrap { display: flex; flex-direction: column; gap: 14px; }
 
 .mc-opties { display: flex; flex-direction: column; gap: 10px; }
 
 .mc-optie {
   width: 100%;
-  min-height: 52px;
-  padding: 12px 16px;
+  min-height: 56px;
+  padding: 14px 18px;
   text-align: left;
-  border: 1px solid var(--rand);
-  border-radius: var(--radius);
-  background: var(--kaart);
+  border: 1px solid var(--rand-sterk);
+  border-radius: 15px;
+  background: var(--card);
   color: var(--tekst);
   font: inherit;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: transform 0.12s, border-color 0.2s, background 0.2s;
 }
 
 .mc-optie:not(:disabled):active { transform: scale(0.99); }
 
 .mc-optie.mc-goed {
-  background: rgba(76, 175, 125, 0.22);
+  background: color-mix(in srgb, var(--groen) 22%, var(--card));
   border-color: var(--groen);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .mc-optie.mc-fout {
-  background: rgba(224, 86, 86, 0.22);
+  background: color-mix(in srgb, var(--rood) 22%, var(--card));
   border-color: var(--rood);
 }
 
@@ -680,58 +800,58 @@ body.drill-actief .tabbar { display: none; }
 
 /* zelfbeoordeling */
 
-.beoordeel {
-  display: flex;
-  gap: 8px;
-}
+.beoordeel { display: flex; gap: 10px; }
 
 .oordeel-knop {
   flex: 1;
-  min-height: 52px;
-  border: 1px solid var(--rand);
-  border-radius: var(--radius);
-  background: var(--kaart-hoog);
+  min-height: 56px;
+  border: 1px solid var(--rand-sterk);
+  border-radius: 15px;
+  background: var(--card);
   color: var(--tekst);
   font: inherit;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: transform 0.12s;
 }
 
-.oordeel-knop:active { transform: scale(0.97); }
+.oordeel-knop:active { transform: scale(0.96); }
 
-.oordeel-fout { background: rgba(224, 86, 86, 0.18); border-color: var(--rood); color: var(--rood); }
-.oordeel-bijna { background: rgba(232, 184, 75, 0.15); border-color: var(--geel); color: var(--geel); }
-.oordeel-goed { background: rgba(76, 175, 125, 0.18); border-color: var(--groen); color: var(--groen); }
+.oordeel-fout { background: color-mix(in srgb, var(--rood) 16%, var(--card)); border-color: color-mix(in srgb, var(--rood) 50%, transparent); color: var(--rood); }
+.oordeel-bijna { background: color-mix(in srgb, var(--geel) 15%, var(--card)); border-color: color-mix(in srgb, var(--geel) 50%, transparent); color: var(--geel); }
+.oordeel-goed { background: color-mix(in srgb, var(--groen) 16%, var(--card)); border-color: color-mix(in srgb, var(--groen) 50%, transparent); color: var(--groen); }
 
 /* resultaat */
 
 .drill-resultaat {
-  max-width: 560px;
+  max-width: 600px;
   width: 100%;
   margin: 0 auto;
-  padding: 32px 16px calc(32px + env(safe-area-inset-bottom));
+  padding: 40px 18px calc(36px + env(safe-area-inset-bottom));
   text-align: center;
 }
 
-.resultaat-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
-
-.resultaat-score { font-size: 1.1rem; font-weight: 600; margin: 8px 0; }
-
-.beheersing-balk.groot { height: 12px; max-width: 280px; margin: 12px auto 4px; }
-
-.resultaat-foutlijst {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 8px;
-  text-align: left;
+.resultaat-emoji {
+  font-size: 3.4rem;
+  display: block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent));
 }
+
+.drill-resultaat h2 { font-size: 1.7rem; font-weight: 800; }
+
+.resultaat-score { font-size: 1.15rem; font-weight: 700; margin: 10px 0; }
+
+.beheersing-balk.groot { height: 14px; max-width: 280px; margin: 14px auto 4px; }
+
+.resultaat-foutlijst { list-style: none; padding: 0; margin: 0 0 8px; text-align: left; }
 
 .resultaat-foutlijst li {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 12px 14px;
+  gap: 3px;
+  padding: 14px 16px;
 }
 
 .drill-resultaat .sectiekop { text-align: left; }
@@ -740,13 +860,13 @@ body.drill-actief .tabbar { display: none; }
 
 .offline-pill {
   margin-left: auto;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: rgba(232, 184, 75, 0.18);
+  letter-spacing: 0.05em;
+  background: color-mix(in srgb, var(--geel) 18%, transparent);
   color: var(--geel);
 }
 
@@ -755,36 +875,33 @@ body.drill-actief .tabbar { display: none; }
 .install-banner {
   display: flex;
   align-items: center;
-  gap: 10px;
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 10px 16px;
-  background: var(--kaart-hoog);
-  border-bottom: 1px solid var(--rand);
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto 4px;
+  padding: 12px 16px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 16%, var(--card)), var(--card));
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
 }
 
-.install-banner span {
-  flex: 1;
-  font-size: 0.85rem;
-}
-
-.install-banner .knop { min-height: 40px; padding: 8px 14px; }
+.install-banner span { flex: 1; font-size: 0.85rem; font-weight: 600; }
+.install-banner .knop { min-height: 42px; padding: 9px 16px; }
 
 /* ===== toast ===== */
 
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(84px + env(safe-area-inset-bottom));
+  bottom: calc(96px + env(safe-area-inset-bottom));
   transform: translate(-50%, 12px);
-  background: var(--kaart-hoog);
+  background: var(--card-2);
   color: var(--tekst);
-  border: 1px solid var(--rand);
+  border: 1px solid var(--rand-sterk);
   border-radius: 999px;
-  padding: 10px 18px;
+  padding: 11px 20px;
   font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+  box-shadow: var(--schaduw);
   opacity: 0;
   transition: opacity 0.25s, transform 0.25s;
   z-index: 60;
@@ -792,3 +909,12 @@ body.drill-actief .tabbar { display: none; }
 }
 
 .toast.zichtbaar { opacity: 1; transform: translate(-50%, 0); }
+
+/* ===== toegankelijkheid ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
