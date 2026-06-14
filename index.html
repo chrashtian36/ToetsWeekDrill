@@ -15,7 +15,13 @@
 <header class="app-kop">
   <span class="app-logo">📚</span>
   <span class="app-naam">ToetsweekDrill</span>
+  <span id="offlinePill" class="offline-pill" hidden>offline</span>
 </header>
+<div id="installBanner" class="install-banner" hidden>
+  <span id="installTekst"></span>
+  <button id="installKnop" class="knop primair" hidden>Installeren</button>
+  <button id="installSluit" class="icoonknop" aria-label="Niet nu">✕</button>
+</div>
 <main id="app"></main>
 <nav class="tabbar">
   <a href="#/home" data-tab="home"><span class="tab-icoon">🏠</span><span>Home</span></a>

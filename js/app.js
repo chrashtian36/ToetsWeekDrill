@@ -51,6 +51,19 @@ function boxDots(box) {
   return '●'.repeat(box) + '○'.repeat(3 - box);
 }
 
+// Korte bevestigingsmelding onderin beeld.
+function toast(bericht) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = bericht;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('zichtbaar'));
+  setTimeout(() => {
+    t.classList.remove('zichtbaar');
+    setTimeout(() => t.remove(), 300);
+  }, 2200);
+}
+
 // Bouwt een op te slaan Vraag-object met voortgangsvelden. `bestaand` is een
 // optionele bestaande vraag waarvan we id/voortgang willen behouden.
 function maakVraag(toetsId, { type, vraag, antwoord, opties }, bestaand = null, bron = 'handmatig') {
@@ -338,6 +351,7 @@ async function importeerData(bestand) {
     if (!confirm(`Import vervangt alle huidige data door: ${samenvatting}. Doorgaan?`)) return;
     await db.importAlles(data);
     render();
+    toast('Data geïmporteerd');
   } catch (e) {
     alert('Importeren mislukt: ' + e.message);
   }
@@ -542,6 +556,7 @@ function vraagForm(toetsId, vraag = null) {
     await db.put('vragen', nieuw);
     dlg.close();
     render();
+    toast(vraag ? 'Vraag bijgewerkt' : 'Vraag toegevoegd');
   });
 }
 
@@ -800,6 +815,7 @@ function aiReview(dlg, toetsId, vragen) {
     }));
     dlg.querySelector('[data-annuleer]').addEventListener('click', () => dlg.close());
     dlg.querySelector('[data-opslaan]').addEventListener('click', async () => {
+      let opgeslagen = 0;
       for (const v of lijst) {
         const vraag = String(v.vraag || '').trim();
         if (!vraag) continue;
@@ -812,9 +828,11 @@ function aiReview(dlg, toetsId, vragen) {
         }
         if (!antwoord) continue;
         await db.put('vragen', maakVraag(toetsId, { type: v.type, vraag, antwoord, opties }, null, 'ai'));
+        opgeslagen++;
       }
       dlg.close();
       render();
+      toast(`${opgeslagen} ${opgeslagen === 1 ? 'vraag' : 'vragen'} opgeslagen`);
     });
   }
 
@@ -833,6 +851,55 @@ async function vraagPersistenteOpslag() {
   } catch { /* niet kritisch */ }
 }
 
+// Install-banner (echte PWA-install) + offline-indicator.
+function initPwaUx() {
+  const offlinePill = document.getElementById('offlinePill');
+  const updateOnline = () => { offlinePill.hidden = navigator.onLine; };
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+  updateOnline();
+
+  const banner = document.getElementById('installBanner');
+  const tekst = document.getElementById('installTekst');
+  const installKnop = document.getElementById('installKnop');
+  const installSluit = document.getElementById('installSluit');
+
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (standalone || localStorage.getItem('installDicht') === '1') return;
+
+  installSluit.addEventListener('click', () => {
+    banner.hidden = true;
+    localStorage.setItem('installDicht', '1');
+  });
+
+  // Android/Chrome: vang de install-prompt op en bied een knop aan
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferred = e;
+    tekst.textContent = '📲 Installeer ToetsweekDrill als app';
+    installKnop.hidden = false;
+    banner.hidden = false;
+  });
+  window.addEventListener('appinstalled', () => { banner.hidden = true; });
+  installKnop.addEventListener('click', async () => {
+    if (!deferred) return;
+    deferred.prompt();
+    await deferred.userChoice;
+    deferred = null;
+    banner.hidden = true;
+  });
+
+  // iOS/Safari kent geen beforeinstallprompt → toon een korte instructie
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (isIOS) {
+    tekst.textContent = '📲 Installeren: tik op Deel en kies “Zet op beginscherm”.';
+    installKnop.hidden = true;
+    banner.hidden = false;
+  }
+}
+
 vraagPersistenteOpslag();
+initPwaUx();
 window.addEventListener('hashchange', render);
 render();
